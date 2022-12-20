@@ -4,32 +4,58 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" 
   PolicySchemaVersion="0.3.0.0" 
-  TenantId="yourtenant.onmicrosoft.com" 
+  TenantId="samltest321.onmicrosoft.com" 
   PolicyId="B2C_1A_TrustFrameworkExtensions" 
-  PublicPolicyUri="http://yourtenant.onmicrosoft.com/B2C_1A_TrustFrameworkExtensions">
+  PublicPolicyUri="http://samltest321.onmicrosoft.com/B2C_1A_TrustFrameworkExtensions">
   
   <BasePolicy>
-    <TenantId>yourtenant.onmicrosoft.com</TenantId>
+    <TenantId>samltest321.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_TrustFrameworkLocalization</PolicyId>
   </BasePolicy>
   <BuildingBlocks>
-
   </BuildingBlocks>
 
   <ClaimsProviders>
+    <ClaimsProvider>
+      <DisplayName>Token Issuer</DisplayName>
+      <TechnicalProfiles>
+        <!-- SAML Token Issuer technical profile -->
+        <TechnicalProfile Id="Saml2AssertionIssuer">
+          <DisplayName>Token Issuer</DisplayName>
+          <Protocol Name="SAML2"/>
+          <OutputTokenFormat>SAML2</OutputTokenFormat>
+          <Metadata>
+            <Item Key="IssuerUri">https://samltest321.b2clogin.com/samltest321.onmicrosoft.com</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="SamlAssertionSigning" StorageReferenceId="B2C_1A_TokenSigningKeyContainer"/>
+            <Key Id="SamlMessageSigning" StorageReferenceId="B2C_1A_TokenSigningKeyContainer"/>
+          </CryptographicKeys>
+          <InputClaims/>
+          <OutputClaims/>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Saml-issuer"/>
+        </TechnicalProfile>
 
+        <!-- Session management technical profile for SAML-based tokens -->
+        <TechnicalProfile Id="SM-Saml-issuer">
+          <DisplayName>Session Management Provider</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.SSO.SamlSSOSessionProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
+        </TechnicalProfile>
+
+      </TechnicalProfiles>
+    </ClaimsProvider>
 
     <ClaimsProvider>
       <DisplayName>Local Account SignIn</DisplayName>
       <TechnicalProfiles>
          <TechnicalProfile Id="login-NonInteractive">
           <Metadata>
-            <Item Key="client_id">ProxyIdentityExperienceFrameworkAppId</Item>
-            <Item Key="IdTokenAudience">IdentityExperienceFrameworkAppId</Item>
+            <Item Key="client_id">f3396fce-de2f-4036-9ead-f6523b58ddda</Item>
+            <Item Key="IdTokenAudience">565eedbe-861d-4055-994a-a2bd7af507e7</Item>
           </Metadata>
           <InputClaims>
-            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="ProxyIdentityExperienceFrameworkAppId" />
-            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="IdentityExperienceFrameworkAppId" />
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="f3396fce-de2f-4036-9ead-f6523b58ddda" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="565eedbe-861d-4055-994a-a2bd7af507e7" />
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
