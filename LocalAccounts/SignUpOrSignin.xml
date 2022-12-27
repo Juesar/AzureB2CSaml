@@ -5,33 +5,42 @@
   xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06"
   PolicySchemaVersion="0.3.0.0"
   TenantId="samltest321.onmicrosoft.com"
-  PolicyId="B2C_1A_signup_signin"
-  PublicPolicyUri="http://samltest321.onmicrosoft.com/B2C_1A_signup_signin">
+  PolicyId="B2C_1A_signup_signin_saml"
+  PublicPolicyUri="http://samltest321.onmicrosoft.com/B2C_1A_signup_signin_saml">
 
   <BasePolicy>
     <TenantId>samltest321.onmicrosoft.com</TenantId>
     <PolicyId>B2C_1A_TrustFrameworkExtensions</PolicyId>
   </BasePolicy>
 
+  <UserJourneys>
+    <UserJourney Id="SignUpOrSignIn">
+      <OrchestrationSteps>
+        <OrchestrationStep Order="4" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="Saml2AssertionIssuer"/>
+      </OrchestrationSteps>
+    </UserJourney>
+  </UserJourneys>
+
   <RelyingParty>
     <DefaultUserJourney ReferenceId="SignUpOrSignIn" />
-    <Endpoints>
-      <!--points to refresh token journey when app makes refresh token request-->
-      <Endpoint Id="Token" UserJourneyReferenceId="RedeemRefreshToken" />
-    </Endpoints>
     <TechnicalProfile Id="PolicyProfile">
       <DisplayName>PolicyProfile</DisplayName>
-      <Protocol Name="OpenIdConnect" />
+      <Protocol Name="SAML2"/>
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="extension_Sender_identifier" DefaultValue="riocan" AlwaysUseDefaultValue="true"/>
+        <InputClaim ClaimTypeReferenceId="extension_nameid" DefaultValue="email" AlwaysUseDefaultValue="true" />
+      </InputClaims>
       <OutputClaims>
         <OutputClaim ClaimTypeReferenceId="displayName" />
         <OutputClaim ClaimTypeReferenceId="givenName" />
         <OutputClaim ClaimTypeReferenceId="surname" />
-        <OutputClaim ClaimTypeReferenceId="email" />
-        <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="sub"/>
-        <OutputClaim ClaimTypeReferenceId="tenantId" AlwaysUseDefaultValue="true" DefaultValue="{Policy:TenantObjectId}" />
-
+        <OutputClaim ClaimTypeReferenceId="email" DefaultValue="" />
+        <OutputClaim ClaimTypeReferenceId="identityProvider" DefaultValue="" />
+        <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="objectId"/>
+        <OutputClaim ClaimTypeReferenceId="extension_Sender_identifier" DefaultValue="riocan"/>
+        <OutputClaim ClaimTypeReferenceId="extension_nameid"/>
       </OutputClaims>
-      <SubjectNamingInfo ClaimType="sub" />
+      <SubjectNamingInfo ClaimType="objectId" ExcludeAsClaim="true"/>
     </TechnicalProfile>
   </RelyingParty>
 </TrustFrameworkPolicy>

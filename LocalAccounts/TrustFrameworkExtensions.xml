@@ -13,6 +13,26 @@
     <PolicyId>B2C_1A_TrustFrameworkLocalization</PolicyId>
   </BasePolicy>
   <BuildingBlocks>
+    <ClaimsSchema>
+      <ClaimType Id="extension_Sender_identifier">
+        <DisplayName>Sender Identifier</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Identifier to comunicate with Versapay</UserHelpText>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType>
+      <!-- <ClaimType Id="Customer_identiifer">
+        <DisplayName>Customer Identifier</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Identifier to comunicate with Versapay</UserHelpText>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType> -->
+      <ClaimType Id="extension_nameid">
+        <DisplayName>Name Id</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Email to comunicate with Versapay</UserHelpText>
+        <UserInputType>TextBox</UserInputType>
+      </ClaimType>
+    </ClaimsSchema>
   </BuildingBlocks>
 
   <ClaimsProviders>
@@ -28,8 +48,8 @@
             <Item Key="IssuerUri">https://samltest321.b2clogin.com/samltest321.onmicrosoft.com</Item>
           </Metadata>
           <CryptographicKeys>
-            <Key Id="SamlAssertionSigning" StorageReferenceId="B2C_1A_TokenSigningKeyContainer"/>
-            <Key Id="SamlMessageSigning" StorageReferenceId="B2C_1A_TokenSigningKeyContainer"/>
+            <Key Id="SamlAssertionSigning" StorageReferenceId="B2C_1A_SamlIdpCert"/>
+            <Key Id="SamlMessageSigning" StorageReferenceId="B2C_1A_SamlIdpCert"/>
           </CryptographicKeys>
           <InputClaims/>
           <OutputClaims/>
@@ -59,6 +79,18 @@
           </InputClaims>
         </TechnicalProfile>
       </TechnicalProfiles>
+    </ClaimsProvider>
+
+    <ClaimsProvider>
+      <DisplayName>Azure Active Directory</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="AAD-Common">
+          <Metadata>
+            <Item Key="ClientId">52c1e3c2-538d-46e5-aa17-b68a0c75eed4</Item>
+            <Item Key="ApplicationObjectId">1db07161-ee4f-4d3b-8783-d76b6154e94c</Item>
+          </Metadata>
+        </TechnicalProfile>
+      </TechnicalProfiles> 
     </ClaimsProvider>
 
   </ClaimsProviders>
