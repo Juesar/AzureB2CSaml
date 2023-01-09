@@ -16,7 +16,36 @@
   <UserJourneys>
     <UserJourney Id="SignUpOrSignIn">
       <OrchestrationSteps>
-        <OrchestrationStep Order="4" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="Saml2AssertionIssuer"/>
+        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
+          </ClaimsProviderSelections>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>objectId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserReadWithObjectId" TechnicalProfileReferenceId="AAD-UserReadUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="EmailNameIdExchangeProfile" TechnicalProfileReferenceId="EmailNameIdExchange" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="5" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="Saml2AssertionIssuer"/>
       </OrchestrationSteps>
     </UserJourney>
   </UserJourneys>
@@ -27,18 +56,19 @@
       <DisplayName>PolicyProfile</DisplayName>
       <Protocol Name="SAML2"/>
       <InputClaims>
-        <InputClaim ClaimTypeReferenceId="extension_Sender_identifier" DefaultValue="riocan" AlwaysUseDefaultValue="true"/>
-        <InputClaim ClaimTypeReferenceId="extension_nameid" DefaultValue="email" AlwaysUseDefaultValue="true" />
+        <InputClaim ClaimTypeReferenceId="Sender_identifier" DefaultValue="riocan" AlwaysUseDefaultValue="true"/>
+        <InputClaim ClaimTypeReferenceId="Customer_identiifer" DefaultValue="test" AlwaysUseDefaultValue="true"/>
       </InputClaims>
       <OutputClaims>
         <OutputClaim ClaimTypeReferenceId="displayName" />
         <OutputClaim ClaimTypeReferenceId="givenName" />
         <OutputClaim ClaimTypeReferenceId="surname" />
-        <OutputClaim ClaimTypeReferenceId="email" DefaultValue="" />
+        <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email"/>
         <OutputClaim ClaimTypeReferenceId="identityProvider" DefaultValue="" />
         <OutputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="objectId"/>
-        <OutputClaim ClaimTypeReferenceId="extension_Sender_identifier" DefaultValue="riocan"/>
-        <OutputClaim ClaimTypeReferenceId="extension_nameid"/>
+        <OutputClaim ClaimTypeReferenceId="Sender_identifier" DefaultValue="riocan"/>
+        <OutputClaim ClaimTypeReferenceId="Customer_identiifer" DefaultValue="test"/>
+        <OutputClaim ClaimTypeReferenceId="nameid"/>
       </OutputClaims>
       <SubjectNamingInfo ClaimType="objectId" ExcludeAsClaim="true"/>
     </TechnicalProfile>

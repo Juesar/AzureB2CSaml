@@ -14,25 +14,35 @@
   </BasePolicy>
   <BuildingBlocks>
     <ClaimsSchema>
-      <ClaimType Id="extension_Sender_identifier">
+      <ClaimType Id="Sender_identifier">
         <DisplayName>Sender Identifier</DisplayName>
         <DataType>string</DataType>
         <UserHelpText>Identifier to comunicate with Versapay</UserHelpText>
-        <UserInputType>TextBox</UserInputType>
+        <UserInputType>Readonly</UserInputType>
       </ClaimType>
-      <!-- <ClaimType Id="Customer_identiifer">
+      <ClaimType Id="Customer_identiifer">
         <DisplayName>Customer Identifier</DisplayName>
         <DataType>string</DataType>
         <UserHelpText>Identifier to comunicate with Versapay</UserHelpText>
-        <UserInputType>TextBox</UserInputType>
-      </ClaimType> -->
-      <ClaimType Id="extension_nameid">
+        <UserInputType>Readonly</UserInputType>
+      </ClaimType>
+      <ClaimType Id="nameid">
         <DisplayName>Name Id</DisplayName>
         <DataType>string</DataType>
         <UserHelpText>Email to comunicate with Versapay</UserHelpText>
-        <UserInputType>TextBox</UserInputType>
+        <UserInputType>Readonly</UserInputType>
       </ClaimType>
     </ClaimsSchema>
+    <ClaimsTransformations>
+      <ClaimsTransformation Id="CopyEmail" TransformationMethod="CopyClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="signInNames.emailAddress" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="nameid" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+    </ClaimsTransformations>
   </BuildingBlocks>
 
   <ClaimsProviders>
@@ -62,6 +72,23 @@
           <Protocol Name="Proprietary" Handler="Web.TPEngine.SSO.SamlSSOSessionProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
         </TechnicalProfile>
 
+        <TechnicalProfile Id="EmailNameIdExchange">
+          <DisplayName>Unit test</DisplayName>
+          
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="signInNames.emailAddress" />            
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim  ClaimTypeReferenceId="nameid" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CopyEmail" />
+          </OutputClaimsTransformations>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
+        </TechnicalProfile>
       </TechnicalProfiles>
     </ClaimsProvider>
 
